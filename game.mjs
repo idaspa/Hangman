@@ -5,49 +5,102 @@ const rl = readlinePromises.createInterface({ input: process.stdin, output: proc
 //#endregion
 
 import { HANGMAN_UI } from './graphics.mjs';
-import { GREEN, RED, WHITE, RESET } from './colors.mjs';
+import { GREEN, RED, WHITE, RESET, BLUE, YELLOW } from './colors.mjs';
 import dictionary from './dictionary.mjs';
 
-const word = getRandomWord();
+
+let word = getRandomWord();
 let guessedWord = createGuessList(word.length);
 let wrongGuesses = [];
 let isGameOver = false;
+let guesses = 0;
+let gameLanguage = dictionary.en;
+let choosenLanguage = await rl.question(gameLanguage.chooseLanguage);
+
+if(choosenLanguage == `NO`){ 
+    gameLanguage = dictionary.no;
+} 
+
+let playGame = await rl.question(gameLanguage.playGame);
+if (playGame != gameLanguage.correct) {
+    process.exit();
+} 
 
 do {
 
+    
     updateUI();
 
     // Gjette en bokstav || ord.  (|| betyr eller).
-    let guess = (await rl.question(dictionary.guessPrompt)).toLowerCase();
+    let guess = (await rl.question(gameLanguage.guessPrompt)).toLowerCase();
+
+    guesses++;
 
     if (isWordGuessed(word, guess)) {
-        print(dictionary.winCelibration, GREEN);
+        print(gameLanguage.winCelibration, GREEN);
         isGameOver = true;
     }
-    else if (word.includes(guess)) {
+    else if (word.includes(guess) && (wrongGuesses.includes(guess) == false)) {
 
         uppdateGuessedWord(guess);
 
         if (isWordGuessed(word, guessedWord)) {
-            print("Hurra du gjettet ordet", GREEN);
-            isGameOver = true;
+           
+            updateUI() 
+            
+            print(gameLanguage.winCelibration, GREEN);
+           
+            let replayAswer = (await rl.question(gameLanguage.playAgain)).toLowerCase();
+            
+            if(replayAswer == gameLanguage.correct){
+                isGameOver = false;
+                word = getRandomWord();
+                guessedWord = createGuessList(word.length);
+                wrongGuesses = [];  
+            }
+            else{
+                isGameOver = true;
+               }
         }
-    } else {
-        print(" DU TAR FEIL !!!!!!!", RED);
+    } else if(wrongGuesses.includes(guess) == false){
+        print(gameLanguage.wrong, RED);
         wrongGuesses.push(guess);
 
         if (wrongGuesses.length >= HANGMAN_UI.length - 1) {
-            isGameOver = true;
-            print("Du har daua", RED);
+          
+            updateUI()
+          
+            print(gameLanguage.die, RED); 
+            print(`Du gjettet ${guesses} ganger!`)
+
+           let replayAswer = (await rl.question(gameLanguage.playAgain)).toLowerCase();
+
+           if(replayAswer == gameLanguage.correct){
+               isGameOver = false;
+               word = getRandomWord();
+                guessedWord = createGuessList(word.length);
+                wrongGuesses = []; 
+           }
+           else{
+               isGameOver = true;
+              }
+          
+            
         }
 
-    }
-
+    } 
+        
+    
     // Har du lyst å spille igjen?
 
+ 
 } while (isGameOver == false)
+    
+    process.exit();
 
-process.exit();
+
+    
+    
 
 function uppdateGuessedWord(guess) {
     for (let i = 0; i < word.length; i++) {
@@ -87,14 +140,17 @@ function updateUI() {
     print(guessedWord.join(""), GREEN);
     print(HANGMAN_UI[wrongGuesses.length]);
     if (wrongGuesses.length > 0) {
-        print(dictionary.wrongGuesses + RED + wrongGuesses.join() + RESET);
+        print(gameLanguage.wrongGuesses + RED + wrongGuesses.join() + RESET);
     }
 }
 
 function getRandomWord() {
 
     const words = ["Kiwi", "Car", "Dog", "etwas"];
-    let index = Math.floor(Math.random() * words.length - 1);
+    let index = Math.floor(Math.random() * words.length);
     return words[index].toLowerCase();
-
+    
 }
+
+
+    
