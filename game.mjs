@@ -25,11 +25,9 @@ let playGame = await rl.question(gameLanguage.playGame);
 if (playGame != gameLanguage.correct) {
     process.exit();
 } 
-
 do {
 
-    
-    updateUI();
+      updateUI();
 
     // Gjette en bokstav || ord.  (|| betyr eller).
     let guess = (await rl.question(gameLanguage.guessPrompt)).toLowerCase();
@@ -71,7 +69,7 @@ do {
             updateUI()
           
             print(gameLanguage.die, RED); 
-            print(`Du gjettet ${guesses} ganger!`)
+            print(`${gameLanguage.tries} ${guesses} ${gameLanguage.guessAmount}`);
 
            let replayAswer = (await rl.question(gameLanguage.playAgain)).toLowerCase();
 

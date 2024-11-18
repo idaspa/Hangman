@@ -1,6 +1,6 @@
 const dictionary = {
 no: { 
-    playGame: `vil du spille hangman J/N?`,
+    playGame: `Vil du spille hangman J/N?`,
     wrongGuesses: `Feil gjetninger:`,
     guessPrompt: `Gjett en bokstav eller ord: `,
     winCelibration: `Hurra du gjettet ordet`,
@@ -8,7 +8,11 @@ no: {
     correct: `j`,
     playAgain: `Vil du spille igjen? J/N`,
     die: `Du har daua`,
-    wrong: `du tar feil`
+    wrong: `Du tar feil`,
+    tries: `Du prøvde`,
+    guessAmount: `Ganger`
+
+
 },
 
 en: {
@@ -20,7 +24,9 @@ en: {
     correct: `y`,
     playAgain: `Do you want a rematch? Y/N`,
     die: `You dead`,
-    wrong: `You wrong`
+    wrong: `You wrong`,
+    tries: `You guessed`,
+    guessAmount: `Times`
 },
 
 };
