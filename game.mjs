@@ -35,22 +35,32 @@ do {
     guesses++;
 
     if (isWordGuessed(word, guess)) {
-        print(gameLanguage.winCelibration, GREEN);
-        isGameOver = true;
-    }
+        
+     print(`${gameLanguage.winCelibration} ${gameLanguage.tries} ${guesses} ${gameLanguage.guessAmount}`, GREEN);
+        
+     let replayAswer = (await rl.question(gameLanguage.playAgain)).toLowerCase();  
+       
+     if (replayAswer == gameLanguage.correct){
+            isGameOver = false;
+            word = getRandomWord();
+            guessedWord = createGuessList(word.length);
+            wrongGuesses = [];  
+        }
+        else{
+            isGameOver = true;
+        }
+    
+    } 
     else if (word.includes(guess) && (wrongGuesses.includes(guess) == false)) {
-
-        uppdateGuessedWord(guess);
+             uppdateGuessedWord(guess);
 
         if (isWordGuessed(word, guessedWord)) {
-           
             updateUI() 
-            
-            print(gameLanguage.winCelibration, GREEN);
+            print(`${gameLanguage.winCelibration} ${gameLanguage.tries} ${guesses} ${gameLanguage.guessAmount}`, YELLOW);
            
             let replayAswer = (await rl.question(gameLanguage.playAgain)).toLowerCase();
-            
-            if (replayAswer == gameLanguage.correct){
+             
+             if (replayAswer == gameLanguage.correct){
                 isGameOver = false;
                 word = getRandomWord();
                 guessedWord = createGuessList(word.length);
@@ -60,19 +70,16 @@ do {
                 isGameOver = true;
             }
         }
-    } 
-    else if (wrongGuesses.includes(guess) == false){
-        
-        wrongGuesses.push(guess);
-         updateUI()
+    } else if (wrongGuesses.includes(guess) == false){
+               wrongGuesses.push(guess);
+               updateUI()
 
         if (wrongGuesses.length >= HANGMAN_UI.length - 1) {
-            updateUI()
-           
-            print(`${gameLanguage.wrong + gameLanguage.die} ${gameLanguage.tries} ${guesses} ${gameLanguage.guessAmount}`, YELLOW);
+           updateUI()
+           print(`${gameLanguage.wrong + gameLanguage.die} ${gameLanguage.tries} ${guesses} ${gameLanguage.guessAmount}`, YELLOW);
             
-            let replayAswer = (await rl.question(gameLanguage.playAgain)).toLowerCase();
-
+           let replayAswer = (await rl.question(gameLanguage.playAgain)).toLowerCase();
+            
            if(replayAswer == gameLanguage.correct){
                isGameOver = false;
                word = getRandomWord();
