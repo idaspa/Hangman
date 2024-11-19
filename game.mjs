@@ -7,7 +7,6 @@ const rl = readlinePromises.createInterface({ input: process.stdin, output: proc
 import { HANGMAN_UI } from './graphics.mjs';
 import { GREEN, RED, WHITE, RESET, BLUE, YELLOW } from './colors.mjs';
 import dictionary from './dictionary.mjs';
-import { SPLASH_SCREEN, START_SCREEN } from './startscreen.mjs';
 
 
 let word = getRandomWord();
