@@ -7,6 +7,7 @@ const rl = readlinePromises.createInterface({ input: process.stdin, output: proc
 import { HANGMAN_UI } from './graphics.mjs';
 import { GREEN, RED, WHITE, RESET, BLUE, YELLOW } from './colors.mjs';
 import dictionary from './dictionary.mjs';
+import { SPLASH_SCREEN, START_SCREEN } from './startscreen.mjs';
 
 
 let word = getRandomWord();
@@ -15,23 +16,23 @@ let wrongGuesses = [];
 let isGameOver = false;
 let guesses = 0;
 let gameLanguage = dictionary.en;
-let choosenLanguage = await rl.question(gameLanguage.chooseLanguage);
 
-if(choosenLanguage == `NO`){ 
+let choosenLanguage = await rl.question(gameLanguage.chooseLanguage);
+if (choosenLanguage == `NO`){ 
     gameLanguage = dictionary.no;
 } 
 
-let playGame = await rl.question(gameLanguage.playGame);
+let playGame = await rl.question(BLUE + gameLanguage.playGame + RESET);
 if (playGame != gameLanguage.correct) {
     process.exit();
 } 
+
 do {
 
       updateUI();
 
     // Gjette en bokstav || ord.  (|| betyr eller).
     let guess = (await rl.question(gameLanguage.guessPrompt)).toLowerCase();
-
     guesses++;
 
     if (isWordGuessed(word, guess)) {
@@ -50,7 +51,7 @@ do {
            
             let replayAswer = (await rl.question(gameLanguage.playAgain)).toLowerCase();
             
-            if(replayAswer == gameLanguage.correct){
+            if (replayAswer == gameLanguage.correct){
                 isGameOver = false;
                 word = getRandomWord();
                 guessedWord = createGuessList(word.length);
@@ -58,20 +59,20 @@ do {
             }
             else{
                 isGameOver = true;
-               }
+            }
         }
-    } else if(wrongGuesses.includes(guess) == false){
-        print(gameLanguage.wrong, RED);
+    } 
+    else if (wrongGuesses.includes(guess) == false){
+        
         wrongGuesses.push(guess);
+         updateUI()
 
         if (wrongGuesses.length >= HANGMAN_UI.length - 1) {
-          
             updateUI()
-          
-            print(gameLanguage.die, RED); 
-            print(`${gameLanguage.tries} ${guesses} ${gameLanguage.guessAmount}`);
-
-           let replayAswer = (await rl.question(gameLanguage.playAgain)).toLowerCase();
+           
+            print(`${gameLanguage.wrong + gameLanguage.die} ${gameLanguage.tries} ${guesses} ${gameLanguage.guessAmount}`, YELLOW);
+            
+            let replayAswer = (await rl.question(gameLanguage.playAgain)).toLowerCase();
 
            if(replayAswer == gameLanguage.correct){
                isGameOver = false;
@@ -80,24 +81,20 @@ do {
                 wrongGuesses = []; 
            }
            else{
-               isGameOver = true;
-              }
-          
-            
-        }
+                 isGameOver = true;
+              } 
+
+        }   
 
     } 
-        
-    
     // Har du lyst å spille igjen?
 
- 
 } while (isGameOver == false)
-    
+   
+    console.log(RESET);
     process.exit();
 
 
-    
     
 
 function uppdateGuessedWord(guess) {
